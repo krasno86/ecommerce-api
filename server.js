@@ -14,7 +14,10 @@ app.get('/', (req, res) => {
     res.send('API started...');
 });
 
-const PORT = process.env.PORT || 5000;
+const productRoutes = require('./routes/productRoutes');
+app.use('/api/products', productRoutes);
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
