@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import productRoutes from './routes/productRoutes';
+import authRoutes from './routes/authRoutes';
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ connectDB();
 const app: Application = express();
 
 app.use(express.json());
-
+app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 
 app.get('/', (req: Request, res: Response) => {
