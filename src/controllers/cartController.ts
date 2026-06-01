@@ -11,7 +11,6 @@ const getOrCreateCart = async (userId: string) => {
 
 export const getCart = async (req: any, res: Response): Promise<void> => {
     try {
-        // Find cart and fill product details (title, price, image)
         const cart = await Cart.findOne({ user: req.user.id })
             .populate('items.product', 'title price images stock');
 
@@ -30,6 +29,7 @@ export const addToCart = async (req: any, res: Response): Promise<void> => {
     try {
         const { productId, quantity = 1 } = req.body;
         const cart = await getOrCreateCart(req.user.id);
+
         const itemIndex = cart.items.findIndex(
             (item) => item.product.toString() === productId
         );
@@ -41,8 +41,7 @@ export const addToCart = async (req: any, res: Response): Promise<void> => {
         }
 
         await cart.save();
-
-        const updatedCart = await cart.populate('items.product', 'title price images');
+        const updatedCart = await cart.populate('items.product', 'title price images stock');
         res.status(200).json({ success: true, data: updatedCart });
     } catch (error: any) {
         res.status(400).json({ success: false, error: error.message });
@@ -51,19 +50,33 @@ export const addToCart = async (req: any, res: Response): Promise<void> => {
 
 export const removeFromCart = async (req: any, res: Response): Promise<void> => {
     try {
-        const cart = await Cart.findOne({ user: req.user.id });
+        let cart = await Cart.findOne({ user: req.user.id });
 
         if (!cart) {
             res.status(404).json({ success: false, error: 'Cart not found' });
             return;
         }
 
-        cart.items = cart.items.filter(
-            (item) => item.product.toString() !== req.params.productId
+        const itemIndex = cart.items.findIndex(
+            (item) => item.product.toString() === req.params.productId
         );
 
-        await cart.save();
-        res.status(200).json({ success: true, data: cart });
+        if (itemIndex > -1) {
+            if (cart.items[itemIndex].quantity > 1) {
+                cart.items[itemIndex].quantity -= 1;
+            } else {
+                cart.items = cart.items.filter(
+                    (item) => item.product.toString() !== req.params.productId
+                );
+            }
+
+            await cart.save();
+
+            const updatedCart = await cart.populate('items.product', 'title price images stock');
+            res.status(200).json({ success: true, data: updatedCart });
+        } else {
+            res.status(404).json({ success: false, error: 'Product not found in cart' });
+        }
     } catch (error: any) {
         res.status(400).json({ success: false, error: error.message });
     }
