@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db';
 import productRoutes from './routes/productRoutes';
 import authRoutes from './routes/authRoutes';
+import categoryRoutes from "./routes/categoryRoutes";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const app: Application = express();
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('E-commerce API is running with TypeScript...');

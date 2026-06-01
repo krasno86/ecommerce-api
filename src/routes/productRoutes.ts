@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getProducts, createProduct, updateProduct, deleteProduct } from '../controllers/productController';
+import {getProducts, createProduct, updateProduct, deleteProduct, getProduct} from '../controllers/productController';
 import { protect, adminOnly } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -9,6 +9,7 @@ router.route('/')
     .post(protect, adminOnly, createProduct);
 
 router.route('/:id')
+    .get(getProduct)
     .put(protect, adminOnly, updateProduct)
     .delete(protect, adminOnly, deleteProduct);
 
