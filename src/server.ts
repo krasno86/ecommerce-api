@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes';
 import categoryRoutes from "./routes/categoryRoutes";
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import cartRoutes from './routes/cartRoutes';
 
 dotenv.config();
 
@@ -36,8 +37,7 @@ const swaggerOptions = {
             },
         },
     },
-    // apis: ['./src/routes/*.ts'],
-    apis: ['./src/routes/*.ts', './src/routes/*.js', './dist/routes/*.js'],
+    apis: ['./src/routes/*.ts'],
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
@@ -46,6 +46,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('E-commerce API is running with TypeScript...');
