@@ -4,10 +4,12 @@ import connectDB from './config/db';
 import productRoutes from './routes/productRoutes';
 import authRoutes from './routes/authRoutes';
 import categoryRoutes from "./routes/categoryRoutes";
+import cartRoutes from './routes/cartRoutes';
+import orderRoutes from './routes/orderRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
-import cartRoutes from './routes/cartRoutes';
 import path from 'path';
+
 
 dotenv.config();
 
@@ -49,6 +51,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('E-commerce API is running with TypeScript...');
