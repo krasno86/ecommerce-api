@@ -6,7 +6,7 @@ export interface IProduct extends Document {
     price: number;
     category: mongoose.Types.ObjectId;
     stock: number;
-    images: [{ type: String, default: ['/uploads/default-product.jpg'] }];
+    images: string[];
     features?: Map<string, string>;
 }
 
@@ -21,6 +21,7 @@ const productSchema: Schema = new Schema(
             required: [true, 'Product must belong to a category']
         },
         stock: { type: Number, required: true, default: 10 },
+        images: { type: [String], default: [] },
         features: { type: Map, of: String },
     },
     { timestamps: true }

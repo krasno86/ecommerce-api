@@ -37,7 +37,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
             }
         }
 
-        const products = await Product.find(queryObject).populate('category', 'name');
+        const products = await Product.find(queryObject).populate('category', 'title description price stock image features');
 
         res.status(200).json({ success: true, count: products.length, data: products });
     } catch (error: any) {
