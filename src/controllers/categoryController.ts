@@ -1,19 +1,16 @@
 import { Request, Response } from 'express';
 import Category from '../models/Category';
-import Product from "../models/Product";
+import Product from '../models/Product';
 
 export const createCategory = async (req: Request, res: Response): Promise<void> => {
     try {
-        const category = await Category.create(req.body);
-        res.status(201).json({
-            success: true,
-            data: category
-        });
+        // const category = await Category.create(req.body);
+        const categoryData = { ...req.body };
+        if (req.file) categoryData.images = [`/uploads/${req.file.filename}`];
+        const category = await Category.create(categoryData);
+        res.status(201).json({ success: true, data: category });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            error: error.message
-        });
+        res.status(400).json({ success: false, error: error.message });
     }
 };
 
@@ -40,7 +37,7 @@ export const deleteCategory = async (req: Request, res: Response): Promise<void>
         const category = await Category.findByIdAndDelete(req.params.id);
 
         if (!category) {
-            res.status(404).json({ success: false, error: 'Product not found' });
+            res.status(404).json({ success: false, error: 'Category not found' });
             return;
         }
 
@@ -59,7 +56,7 @@ export const getCategories = async (req: Request, res: Response): Promise<void> 
             data: categories
         });
     } catch (error) {
-        res.status(500).json({success: false, error: 'Server Error: Cannot fetch products'});
+        res.status(500).json({success: false, error: 'Server Error: Cannot fetch categories'});
     }
 };
 

@@ -5,11 +5,9 @@ import { upload } from '../middleware/uploadMiddleware';
 
 const router = Router();
 
-router.post('/', protect, adminOnly, upload.single('image'), createProduct);
-
 router.route('/')
     .get(getProducts)
-    .post(protect, adminOnly, createProduct);
+    .post(protect, adminOnly, upload.single('image'), createProduct);
 
 router.route('/:id')
     .get(getProduct)
