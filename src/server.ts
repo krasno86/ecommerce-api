@@ -7,12 +7,14 @@ import categoryRoutes from "./routes/categoryRoutes";
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import cartRoutes from './routes/cartRoutes';
+import path from 'path';
 
 dotenv.config();
 
 connectDB();
 
 const app: Application = express();
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 const swaggerOptions = {
     definition: {

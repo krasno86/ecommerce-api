@@ -30,20 +30,16 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
         if (req.query.minPrice || req.query.maxPrice) {
             queryObject.price = {};
             if (req.query.minPrice) {
-                queryObject.price.$gte = Number(req.query.minPrice); // $gte = Greater Than or Equal (>=)
+                queryObject.price.$gte = Number(req.query.minPrice);
             }
             if (req.query.maxPrice) {
-                queryObject.price.$lte = Number(req.query.maxPrice); // $lte = Less Than or Equal (<=)
+                queryObject.price.$lte = Number(req.query.maxPrice);
             }
         }
 
         const products = await Product.find(queryObject).populate('category', 'name');
 
-        res.status(200).json({
-            success: true,
-            count: products.length,
-            data: products
-        });
+        res.status(200).json({ success: true, count: products.length, data: products });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -51,38 +47,28 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
     try {
-        const product = await Product.create(req.body);
-        res.status(201).json({
-            success: true,
-            data: product
-        });
+        const productData = { ...req.body };
+        if (req.file) productData.images = [`/uploads/${req.file.filename}`];
+        const product = await Product.create(productData);
+        res.status(201).json({ success: true, data: product });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            error: error.message
-        });
+        res.status(400).json({ success: false, error: error.message });
     }
 };
 
 export const getProduct = async (req: Request, res: Response): Promise<void> => {
     try {
         const product = await Product.findById(req.params.id);
-        res.status(201).json({
-            success: true,
-            data: product
-        });
+        res.status(201).json({ success: true, data: product });
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            error: error.message
-        });
+        res.status(400).json({ success: false, error: error.message });
     }
 };
 
 export const updateProduct = async (req: Request, res: Response): Promise<void> => {
     try {
         const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-            returnDocument: 'after', // Fixed the deprecation warning here
+            returnDocument: 'after',
             runValidators: true,
         });
 
