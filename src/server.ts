@@ -9,13 +9,16 @@ import orderRoutes from './routes/orderRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import path from 'path';
-
+import cors from 'cors';
 
 dotenv.config();
 
 connectDB();
 
 const app: Application = express();
+app.use(cors());
+
+app.use(express.json());
 
 const swaggerOptions = {
     definition: {
@@ -46,7 +49,6 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
