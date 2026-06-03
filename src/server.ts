@@ -16,15 +16,14 @@ dotenv.config();
 connectDB();
 
 const app: Application = express();
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'E-Commerce API',
+            title: 'E-Commerce API Docs',
             version: '1.0.0',
-            description: 'API документация для нашего интернет-магазина',
+            description: 'Interactive API documentation for our E-commerce store application',
         },
         servers: [
             {
@@ -46,6 +45,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
