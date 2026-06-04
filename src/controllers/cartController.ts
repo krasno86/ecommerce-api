@@ -20,7 +20,8 @@ export const getCart = async (req: any, res: Response): Promise<void> => {
         }
 
         const totalQuantity = cart.items.reduce((sum, item) => sum + item.quantity, 0);
-        res.status(200).json({ success: true, data: cart, totalQuantity });
+        const totalAmount = cart.items.reduce((sum, item) => sum + (item.product as any).price * item.quantity, 0);
+        res.status(200).json({ success: true, data: cart, totalQuantity, totalAmount });
     } catch (error: any) {
         res.status(500).json({ success: false, error: error.message });
     }
