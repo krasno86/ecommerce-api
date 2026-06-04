@@ -49,9 +49,12 @@ export const createOrder = async (req: any, res: Response): Promise<void> => {
         });
 
         for (const item of cart.items) {
-            await Product.findByIdAndUpdate(item.product._id, {
-                $inc: { stock: -item.quantity }
-            });
+            const product = item.product as any;
+            if (product?._id) {
+                await Product.findByIdAndUpdate(product._id, {
+                    $inc: { stock: -item.quantity }
+                });
+            }
         }
 
         cart.items = [];
@@ -67,7 +70,7 @@ export const getMyOrders = async (req: any, res: Response): Promise<void> => {
     try {
         const orders = await Order.find({ user: req.user.id })
             .populate('items.product', 'title price images')
-            .sort('-createdAt'); // Свежие заказы вверху списка
+            .sort('-createdAt');
 
         res.status(200).json({ success: true, data: orders });
     } catch (error: any) {
@@ -77,7 +80,7 @@ export const getMyOrders = async (req: any, res: Response): Promise<void> => {
 
 export const updateOrderStatus = async (req: any, res: Response): Promise<void> => {
     try {
-        const { status } = req.body; // 'Shipped', 'Delivered', 'Cancelled'
+        const { status } = req.body;
 
         const order = await Order.findById(req.params.id);
 
@@ -86,7 +89,7 @@ export const updateOrderStatus = async (req: any, res: Response): Promise<void> 
             return;
         }
 
-        order.status = status;
+        order.status = status as 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
         await order.save();
 
         res.status(200).json({ success: true, data: order });
