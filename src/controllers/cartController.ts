@@ -74,12 +74,41 @@ export const removeFromCart = async (req: any, res: Response): Promise<void> => 
             }
 
             await cart.save();
-
             const updatedCart = await cart.populate('items.product', 'title price images stock');
+            const totalQuantity = updatedCart.items.reduce((sum, item) => sum + item.quantity, 0);
+            const totalAmount = updatedCart.items.reduce((sum, item) => sum + (item.product as any).price * item.quantity, 0);
+            res.status(200).json({ success: true, data: updatedCart, totalQuantity, totalAmount });
+
             res.status(200).json({ success: true, data: updatedCart });
         } else {
             res.status(404).json({ success: false, error: 'Product not found in cart' });
         }
+    } catch (error: any) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
+export const removeProductGroup = async (req: any, res: Response): Promise<void> => {
+    try {
+        let cart = await Cart.findOne({ user: req.user.id });
+
+        if (!cart) {
+            res.status(404).json({ success: false, error: 'Cart not found' });
+            return;
+        }
+
+        cart.items = cart.items.filter(
+            (item) => item.product.toString() !== req.params.productId
+        );
+
+        await cart.save();
+
+        const updatedCart = await cart.populate('items.product', 'title price images stock');
+
+        const totalQuantity = updatedCart.items.reduce((sum, item) => sum + item.quantity, 0);
+        const totalAmount = updatedCart.items.reduce((sum, item) => sum + (item.product as any).price * item.quantity, 0);
+
+        res.status(200).json({ success: true, data: updatedCart, totalQuantity, totalAmount });
     } catch (error: any) {
         res.status(400).json({ success: false, error: error.message });
     }

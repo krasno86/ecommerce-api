@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCart, addToCart, removeFromCart } from '../controllers/cartController';
+import { getCart, addToCart, removeFromCart, removeProductGroup } from '../controllers/cartController';
 import { protect } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -47,7 +47,6 @@ router.use(protect);
  *       400:
  *         description: Bad Request - Invalid inputs
  */
-
 router.route('/')
     .get(getCart)
     .post(addToCart);
@@ -56,7 +55,7 @@ router.route('/')
  * @openapi
  * /api/cart/{productId}:
  *   delete:
- *     summary: Decrease item quantity or remove it entirely from the cart
+ *     summary: Decrease item quantity by 1 or remove if quantity becomes 0
  *     tags:
  *       - Cart
  *     security:
@@ -67,14 +66,39 @@ router.route('/')
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the product to remove
+ *         description: The ID of the product to decrease
  *     responses:
  *       200:
- *         description: Product quantity decreased or removed successfully
+ *         description: Product quantity decreased successfully
  *       404:
  *         description: Product or cart not found
  */
 router.route('/:productId')
     .delete(removeFromCart);
+
+/**
+ * @openapi
+ * /api/cart/{productId}/group:
+ *   delete:
+ *     summary: Completely remove the entire product row from the cart
+ *     tags:
+ *       - Cart
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the product to remove completely
+ *     responses:
+ *       200:
+ *         description: Product row removed entirely from cart
+ *       404:
+ *         description: Product or cart not found
+ */
+router.route('/:productId/group')
+    .delete(removeProductGroup);
 
 export default router;
