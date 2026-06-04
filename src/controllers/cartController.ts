@@ -42,7 +42,8 @@ export const addToCart = async (req: any, res: Response): Promise<void> => {
 
         await cart.save();
         const updatedCart = await cart.populate('items.product', 'title price images stock');
-        res.status(200).json({ success: true, data: updatedCart });
+        const totalQuantity = updatedCart.items.reduce((sum, item) => sum + item.quantity, 0);
+        res.status(200).json({ success: true, data: { cart: updatedCart, totalQuantity } });
     } catch (error: any) {
         res.status(400).json({ success: false, error: error.message });
     }
