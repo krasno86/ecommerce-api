@@ -10,7 +10,7 @@ const categorySchema: Schema = new Schema(
     {
         name: { type: String, required: [true, 'Please add a category name'], unique: true, trim: true },
         slug: { type: String, required: true, unique: true, lowercase: true },
-        image: { type: [String], default: ['/uploads/default-category.jpg'] }
+        images: { type: [String], default: ['/uploads/default-category.jpg'] }
     },
     { timestamps: true }
 );

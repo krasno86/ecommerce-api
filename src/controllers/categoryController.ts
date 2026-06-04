@@ -16,7 +16,13 @@ export const createCategory = async (req: Request, res: Response): Promise<void>
 
 export const updateCategory = async (req: Request, res: Response): Promise<void> => {
     try {
-        const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+        const updateData = { ...req.body };
+
+        if (req.file) {
+            updateData.images = [`/uploads/${req.file.filename}`];
+        }
+
+        const category = await Category.findByIdAndUpdate(req.params.id, updateData, {
             returnDocument: 'after',
             runValidators: true,
         });

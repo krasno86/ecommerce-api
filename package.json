@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "ts-node -O \"{\\\"module\\\": \\\"commonjs\\\", \\\"types\\\": [\\\"node\\\"]}\" seeder.ts"
   },
   "keywords": [],
   "author": "",
