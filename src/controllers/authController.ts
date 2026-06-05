@@ -2,9 +2,6 @@ import { Request, Response } from 'express';
 import User from '../models/User';
 import generateToken from '../utils/generateToken';
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { firstName, lastName, email, password } = req.body;
@@ -42,9 +39,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-// @desc    Auth user & get token (Login)
-// @route   POST /api/auth/login
-// @access  Public
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
